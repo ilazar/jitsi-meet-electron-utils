@@ -298,7 +298,7 @@ class AlwaysOnTop extends EventEmitter {
                 );
             },
             ondblclick: () => {
-                this._closeAlwaysOnTopWindow();
+                this._hideAlwaysOnTopWindow();
                 this._jitsiMeetElectronWindow.show();
             },
             /**
@@ -431,6 +431,7 @@ class AlwaysOnTop extends EventEmitter {
      */
     _hideAlwaysOnTopWindow() {
       if (exists(this._alwaysOnTopBrowserWindow)) {
+        this.emit(ALWAYSONTOP_WILL_CLOSE);
         this._alwaysOnTopBrowserWindow.hide();
       }
     }
