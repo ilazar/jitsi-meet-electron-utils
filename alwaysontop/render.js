@@ -313,12 +313,14 @@ class AlwaysOnTop extends EventEmitter {
              */
             move: (x, y, initialSize) => {
                 if (this._alwaysOnTopBrowserWindow) {
-                    this._alwaysOnTopBrowserWindow.setBounds({
-                        x,
-                        y,
-                        width: initialSize.width,
-                        height: initialSize.height
-                    });
+                    try {
+                        this._alwaysOnTopBrowserWindow.setBounds({
+                            x,
+                            y,
+                            width: initialSize.width,
+                            height: initialSize.height
+                        });
+                    } catch (ignoreDestroyedRaceConditionError) {}
                 }
             },
             /**
@@ -327,8 +329,10 @@ class AlwaysOnTop extends EventEmitter {
              */
             getCurrentSize: () => {
                 if (this._alwaysOnTopBrowserWindow) {
-                    const [width, height] = this._alwaysOnTopBrowserWindow.getSize();
-                    return { width, height };
+                    try {
+                        const [width, height] = this._alwaysOnTopBrowserWindow.getSize();
+                        return { width, height };
+                    } catch (ignoreDestroyedRaceConditionError) {}
                 }
 
                 return SIZE;
@@ -381,13 +385,15 @@ class AlwaysOnTop extends EventEmitter {
      */
     _closeAlwaysOnTopWindow() {
         if (exists(this._alwaysOnTopBrowserWindow)) {
-            const position =
-                this._alwaysOnTopBrowserWindow.getPosition();
+            try {
+                const position =
+                  this._alwaysOnTopBrowserWindow.getPosition();
 
-            this._position = {
-                x: position[0],
-                y: position[1]
-            };
+                this._position = {
+                    x: position[0],
+                    y: position[1]
+                };
+            } catch (ignoreDestroyedRaceConditionError) {}
         }
 
         if (this._alwaysOnTopWindow) {
@@ -416,7 +422,9 @@ class AlwaysOnTop extends EventEmitter {
      */
     _showAlwaysOnTopWindow() {
       if (exists(this._alwaysOnTopBrowserWindow)) {
-        this._alwaysOnTopBrowserWindow.showInactive();
+        try {
+          this._alwaysOnTopBrowserWindow.showInactive();
+        } catch (ignoreDestroyedRaceConditionError) {}
       }
     }
 
@@ -427,7 +435,9 @@ class AlwaysOnTop extends EventEmitter {
      */
     _hideAlwaysOnTopWindow() {
       if (exists(this._alwaysOnTopBrowserWindow)) {
-        this._alwaysOnTopBrowserWindow.hide();
+        try {
+          this._alwaysOnTopBrowserWindow.hide();
+        } catch (ignoreDestroyedRaceConditionError) {}
       }
     }
 
