@@ -215,18 +215,9 @@ class AlwaysOnTop extends EventEmitter {
      * @param {IntersectionObserver} observer
      */
     _onIntersection(entries) {
-        const singleEntry = entries.pop();
-        this._jitsiMeetElectronWindow.removeListener(
-            'focus',
-            this._hideAlwaysOnTopWindow
-        );
-
-        if (singleEntry.isIntersecting) {
+        const isTargetVisible = entries.length > 0 && entries[entries.length - 1].isIntersecting;
+        if (isTargetVisible) {
             this._hideAlwaysOnTopWindow();
-            this._jitsiMeetElectronWindow.on(
-                'focus',
-                this._hideAlwaysOnTopWindow
-            );
         } else {
             this._openAlwaysOnTopWindow();
         }
