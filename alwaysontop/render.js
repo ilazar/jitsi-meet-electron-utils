@@ -217,8 +217,10 @@ class AlwaysOnTop extends EventEmitter {
     _onIntersection(entries) {
         const isTargetVisible = entries.length > 0 && entries[entries.length - 1].isIntersecting;
         if (isTargetVisible) {
+            this._isMeetingFocused = true;
             this._hideAlwaysOnTopWindow();
         } else {
+            this._isMeetingFocused = false;
             this._openAlwaysOnTopWindow();
         }
     }
@@ -355,8 +357,8 @@ class AlwaysOnTop extends EventEmitter {
      *
      * @returns {void}
      */
-    _openAlwaysOnTopWindow() {
-        if (this._alwaysOnTopWindow) {
+    _openAlwaysOnTopWindow(event) {
+        if (this._alwaysOnTopWindow && (event || !this._isMeetingFocused)) {
             this._showAlwaysOnTopWindow();
             return;
         }
@@ -425,7 +427,7 @@ class AlwaysOnTop extends EventEmitter {
      * @returns {void}
      */
     _hideAlwaysOnTopWindow() {
-      if (exists(this._alwaysOnTopBrowserWindow)) {
+      if (exists(this._alwaysOnTopBrowserWindow) && this._isMeetingFocused) {
         try {
           this._alwaysOnTopBrowserWindow.hide();
         } catch (ignoreDestroyedRaceConditionError) {}
